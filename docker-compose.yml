@@ -1,0 +1,7 @@
+services:
+  web: 
+    build:
+      dockerfile: DockerFile.ubuntu
+      context: .
+    ports:
+      - '40193:40193'
