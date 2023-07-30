@@ -1,0 +1,32 @@
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt update
+RUN apt install -y wireguard ca-certificates curl wget software-properties-common openssh-server openssh-client sudo -y
+# RUN kubectl helm istioctl
+
+# install kubectl
+RUN cd /tmp && curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+RUN install -o root -g root -m 0755 /tmp/kubectl /bin/kubectl && rm -rf /tmp/kubectl
+
+# install helm
+RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+# install istioctl
+RUN curl -sL https://istio.io/downloadIstioctl | bash
+RUN mv $HOME/.istioctl/bin/istioctl /bin
+# install ansible
+RUN add-apt-repository --yes --update ppa:ansible/ansible
+RUN apt install -y ansible
+#install rke
+RUN curl -fsSL -o /tmp/rke_linux-amd64 https://github.com/rancher/rke/releases/download/v1.4.8-rc3/rke_linux-amd64
+RUN chmod +x /tmp/rke_linux-amd64 && mv /tmp/rke_linux-amd64 /bin/rke
+RUN helm repo add bitnami https://charts.bitnami.com/bitnami &&\
+    helm repo add mosip https://mosip.github.io/mosip-helm
+
+RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 mosip 
+RUN  echo 'mosip:mosip' | chpasswd
+RUN service ssh start
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd","-D"]

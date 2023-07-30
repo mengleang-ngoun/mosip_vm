@@ -33,4 +33,26 @@ RUN curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/mi
 RUN mkdir -p /usr/local/bin/
 RUN install minikube /usr/local/bin/
 
+# install helm
+RUN curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
+RUN apt-get install apt-transport-https --yes
+RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" |  tee /etc/apt/sources.list.d/helm-stable-debian.list
+RUN apt-get update
+RUN apt-get install helm
+
+# # install ansible
+# RUN apt update
+# RUN apt install -y software-properties-common
+# RUN add-apt-repository --yes --update ppa:ansible/ansible
+# RUN apt install -y ansible
+
+RUN helm repo add mosip https://mosip.github.io/mosip-helm
+
+WORKDIR /mosip
+COPY ./mosip-infra/deployment/v3 .
+RUN chown -R root:root .
+
+# 6LdB4FcnAAAAAPETGcGZ28_ixkE1hEZ1TKGW1E-G
+# 6LdB4FcnAAAAAF96QgQjWQa4LVAMXf_hIXSVTyii
+
 CMD tail -F /dev/null

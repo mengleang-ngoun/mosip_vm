@@ -1,0 +1,33 @@
+version: "2.1"
+
+services:
+  master:
+    build:
+      dockerfile: DockerFile.infra
+      context: .
+    networks:
+      - network_infra
+    command: tail -F /dev/null
+    environment:
+      - ENV DEBIAN_FRONTEND=noninteractive=value
+  node_1:
+    build:
+      dockerfile: DockerFile.infra
+      context: .
+    networks:
+      - network_infra
+    command: tail -F /dev/null
+    environment:
+      - ENV DEBIAN_FRONTEND=noninteractive=value
+  node_2:
+    build:
+      dockerfile: DockerFile.infra
+      context: .
+    networks:
+      - network_infra
+    command: tail -F /dev/null
+    environment:
+      - ENV DEBIAN_FRONTEND=noninteractive=value
+networks:
+  network_infra:
+    driver: bridge

@@ -1,10 +1,35 @@
+version: "2"
+
 services:
-  minikube: 
+  master: 
     build:
-      dockerfile: DockerFile.ubuntu
+      dockerfile: DockerFile.infra
       context: .
-    ports:
-      - '40193:40193'
-    network_mode: host
+    networks:
+      - mosip-network
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./k8s-infra:/k8s-infra
+      - ./mosip-infra:/mosip-infra
+  node-1: 
+    build:
+      dockerfile: DockerFile.infra
+      context: .
+    networks:
+      - mosip-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./k8s-infra:/k8s-infra
+      - ./mosip-infra:/mosip-infra
+  node-2: 
+    build:
+      dockerfile: DockerFile.infra
+      context: .
+    networks:
+      - mosip-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./k8s-infra:/k8s-infra
+      - ./mosip-infra:/mosip-infra
+networks:
+  mosip-network:
