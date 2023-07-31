@@ -29,4 +29,7 @@ RUN  echo 'mosip:mosip' | chpasswd
 RUN service ssh start
 EXPOSE 22
 
+COPY ./k8s-infra /k8s-infra
+COPY ./mosip-infra /mosip-infra
+
 CMD ["/usr/sbin/sshd","-D"]

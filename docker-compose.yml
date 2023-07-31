@@ -1,35 +1,39 @@
 version: "2"
 
 services:
-  master: 
-    build:
-      dockerfile: DockerFile.infra
-      context: .
+  vm: 
+      image: mosip:latest
+      networks:
+        - mosip-network
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ./k8s-infra:/k8s-infra
+        - ./mosip-infra:/mosip-infra
+  wireguard-nastion-host: 
+    image: mosip:latest
+    ports:
+      - 51820/udp:51820/udp
     networks:
       - mosip-network
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./k8s-infra:/k8s-infra
-      - ./mosip-infra:/mosip-infra
-  node-1: 
-    build:
-      dockerfile: DockerFile.infra
-      context: .
+  observation-cluster-nodes: 
+    image: mosip:latest
     networks:
       - mosip-network
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./k8s-infra:/k8s-infra
-      - ./mosip-infra:/mosip-infra
-  node-2: 
-    build:
-      dockerfile: DockerFile.infra
-      context: .
+  mosip-cluster-nodes: 
+    image: mosip:latest
     networks:
       - mosip-network
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./k8s-infra:/k8s-infra
-      - ./mosip-infra:/mosip-infra
+  mosip-nginx-server: 
+    image: mosip:latest
+    networks:
+      - mosip-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 networks:
   mosip-network:
